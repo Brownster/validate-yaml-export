@@ -42,22 +42,22 @@ def validate_configuration_against_matrix(config_file_stream, matrix_file_stream
     # Instead of saving the report to a CSV file, return the DataFrame
     return report_df
 
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        config_file = request.files['file']
-        matrix_file = request.files['existing_yaml']
+# @app.route('/', methods=['GET', 'POST'])
+# def upload_file():
+#     if request.method == 'POST':
+#         config_file = request.files['file']
+#         matrix_file = request.files['existing_yaml']
 
-        if config_file and matrix_file:
-            report_df = validate_configuration_against_matrix(config_file, matrix_file)
+#         if config_file and matrix_file:
+#             report_df = validate_configuration_against_matrix(config_file, matrix_file)
             
-            # Generate a temporary file to store the report
-            temp_file_path = os.path.join(tempfile.gettempdir(), 'validation_report.csv')
-            report_df.to_csv(temp_file_path, index=False)
+#             # Generate a temporary file to store the report
+#             temp_file_path = os.path.join(tempfile.gettempdir(), 'validation_report.csv')
+#             report_df.to_csv(temp_file_path, index=False)
             
-            return send_file(temp_file_path, as_attachment=True, attachment_filename='validation_report.csv', cache_timeout=0)
+#             return send_file(temp_file_path, as_attachment=True, attachment_filename='validation_report.csv', cache_timeout=0)
 
-    return render_template('index.html')
+#    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
