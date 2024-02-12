@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Configuration Validator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('{{ url_for('static', filename='background.png') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type=file], input[type=number], input[type=submit] {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form action="/" method="post" enctype="multipart/form-data">
+            <h1>Server Configuration Validator</h1>
+            <label for="file">Configuration CSV:</label>
+            <input type="file" name="file" id="file" accept=".csv" required><br><br>
+            <label for="existing_yaml">Matrix CSV:</label>
+            <input type="file" name="existing_yaml" id="existing_yaml" accept=".csv" required><br><br>
+            <input type="submit" value="Validate">
+        </form>
+    </div>
+</body>
+
+</html>
