@@ -1,10 +1,4 @@
 import pandas as pd
-from flask import Flask, render_template, request, send_file
-from werkzeug.utils import secure_filename
-import os
-import tempfile
-
-app = Flask(__name__)
 
 def validate_configuration_against_matrix(config_file_stream, matrix_file_stream):
     # Convert the file streams to pandas DataFrames
