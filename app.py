@@ -2,48 +2,29 @@ from flask import Flask, render_template, request, send_file
 import os
 import tempfile
 from werkzeug.utils import secure_filename
-from csv-validate import validate_configuration_against_matrix  # Ensure this is correctly imported
+# Assuming validate_configuration_against_matrix is in a file named csv_validate.py
+from csv_validate import validate_configuration_against_matrix
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        # Check if the post request has the files part
-        if 'file' not in request.files or 'existing_yaml' not in request.files:
-            return 'No file part', 400
-        
-        file = request.files['file']
-        existing_yaml = request.files['existing_yaml']
+        config_file = request.files['file']
+        matrix_file = request.files['existing_yaml']
 
-        if file.filename == '' or existing_yaml.filename == '':
-            return 'No selected file', 400
+        if config_file and matrix_file:
+            # Generate a temporary file to store the report
+            temp_file_path = os.path.join(tempfile.gettempdir(), 'validation_report.csv')
 
-        if file and existing_yaml:
-            # Secure the filenames
-            filename = secure_filename(file.filename)
-            yaml_filename = secure_filename(existing_yaml.filename)
-
-            # Create temporary files
-            temp_dir = tempfile.mkdtemp()
-            file_path = os.path.join(temp_dir, filename)
-            yaml_path = os.path.join(temp_dir, yaml_filename)
-            output_path = os.path.join(temp_dir, "validation_report.csv")
-
-            file.save(file_path)
-            existing_yaml.save(yaml_path)
-
-            # Run the validation
-            validate_configuration_against_matrix(file_path, yaml_path, output_path)
-
-            # Remove uploaded files
-            os.remove(file_path)
-            os.remove(yaml_path)
+            # Process and validate the uploaded files
+            report_df = validate_configuration_against_matrix(config_file, matrix_file)
+            report_df.to_csv(temp_file_path, index=False)
 
             # Send the result file
-            return send_file(output_path, as_attachment=True, attachment_filename='validation_report.csv')
+            return send_file(temp_file_path, as_attachment=True, attachment_filename='validation_report.csv', cache_timeout=0)
 
-    return render_template('upload.html')
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
